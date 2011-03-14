@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html lang="en"> 
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+    <title>Rotate 3D Lines</title> 
+    <script src="raphael.js" type="text/javascript" charset="utf-8"></script> 
+    <script type="text/javascript" charset="utf-8"> 
+      // Display dimensions in pixels
+      const WIDTH = 640, HEIGTH = 480;
+
+      // Offset between two points in pixels
+      const DISTANCE = 50;
+
+      // Relative coordinate points offset by DISTANCE
+      const X0 = {x:+DISTANCE, y:0, z:0};
+      const X1 = {x:-DISTANCE, y:0, z:0};
+      const Y0 = {x:0, y:+DISTANCE, z:0};
+      const Y1 = {x:0, y:-DISTANCE, z:0};
+      const Z0 = {x:0, y:0, z:+DISTANCE};
+      const Z1 = {x:0, y:0, z:-DISTANCE};
+
+      // Array reference to relative coordinate points
+      const POINTS = [X0, X1, Y0, Y1, Z0, Z1];
+
+      window.onload = function () {
+        var r = Raphael("canvas", WIDTH, HEIGTH);
+        var points = getPoints(32);
+        var path = drawPoints(r, points);
+
+        // After removing the SVG path, this callback rotates each of the
+        // six relative path coordinates and then redraws the path.
+        var rotate = function (dx, dy) {
+          path.remove();
+          rotatePoints(dx, dy);
+          path = drawPoints(r, points);
+        };
+
+        r.rect(0,0,WIDTH,HEIGTH).toBack().attr({fill: "white"}).drag(rotate, null, null);
+      };
+
+      // Extracts the X,Y coordinates from the supplied points and draws them with Raphael.
+      function drawPoints(r, points)
+      {
+        var path = getPath(points);
+        return r.path(path);
+      }
+
+      // Drawing is centered on the canvas
+      const INITX = WIDTH/2, INITY = HEIGTH/2;
+
+      // Returns the X,Y plane coordinates of the points in the SVG path string format.
+      function getPath(points)
+      {
+         var path = "M" + INITX + " " + INITY;
+         for (var i = 0; i < points.length; i++) {
+           path += " l" + points[i].x + " " + points[i].y;
+         }
+         return path;
+      }
+
+      // Rotates the six relative coordinates in the x and y axis.
+      function rotatePoints(dx, dy)
+      {
+        with (Math) {
+          // convert to radians
+          var rx = dx * PI / 180;
+          var ry = dy * PI / 180;
+
+          // To rotate each individual point,
+          // let A and B be 3 x 3 matrices such that
+          //   A = [[1, 0, 0], [0, cos(ry), -sin(ry)], [0, sin(ry), cos(ry)]]
+          //   B = [[cos(rx), -sin(rx), 0], [sin(rx), cos(rx), 0], [0, 0, 1]].
+          // Then, matrix A corresponds to the rotation in the y axis.
+          // Likewise, B corresponds to the rotation in the x axis.
+          // Their product A*B gives the formulae inside the loop.
+          for (var i = 0; i < POINTS.length; i++) {
+            var point = POINTS[i];
+            var x = point.x;
+            var y = point.y;
+            var z = point.z;
+
+            var _x = x * cos(rx) - y * sin(rx);
+            var _y = x * sin(rx) * cos(ry) + y * cos(rx) * cos(ry) - z * sin(ry);
+            var _z = x * sin(rx) * sin(ry) + y * cos(rx) * sin(ry) + z * cos(ry);
+
+            point.x = _x;
+            point.y = _y;
+            point.z = _z;
+          }
+        }
+      }
+
+      // Returns the specified number of randomly connected 3D points.
+      function getPoints(count)
+      {
+        var points = new Array(count);
+        points[0] = {x:0, y:0, z:0};
+        for(var i = 1; i < count; i++) {
+          points[i] = getNextRandomPoint();
+        }
+        return points;
+      }
+
+      // Returns the next point that is offset by a single coordinate.
+      function getNextRandomPoint()
+      {
+        var direction = getRandomInt(0,POINTS.length-1);
+        return POINTS[direction];
+      }
+
+      // Returns a random integer between min and max.
+      function getRandomInt(min, max)
+      {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+    </script> 
+  </head> 
+  <body> 
+    <div id="canvas"></div> 
+    <p id="description">Rotate the cube of lines by clicking and moving the mouse.</p> 
+  </body> 
+</html>
+
