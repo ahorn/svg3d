@@ -6,21 +6,21 @@
     <script src="raphael.js" type="text/javascript" charset="utf-8"></script> 
     <script type="text/javascript" charset="utf-8"> 
       // Display dimensions in pixels
-      const WIDTH = 640, HEIGTH = 480;
+      var WIDTH = 640, HEIGTH = 480;
 
       // Offset between two points in pixels
-      const DISTANCE = 50;
+      var DISTANCE = 50;
 
       // Relative coordinate points offset by DISTANCE
-      const X0 = {x:+DISTANCE, y:0, z:0};
-      const X1 = {x:-DISTANCE, y:0, z:0};
-      const Y0 = {x:0, y:+DISTANCE, z:0};
-      const Y1 = {x:0, y:-DISTANCE, z:0};
-      const Z0 = {x:0, y:0, z:+DISTANCE};
-      const Z1 = {x:0, y:0, z:-DISTANCE};
+      var X0 = {x:+DISTANCE, y:0, z:0};
+      var X1 = {x:-DISTANCE, y:0, z:0};
+      var Y0 = {x:0, y:+DISTANCE, z:0};
+      var Y1 = {x:0, y:-DISTANCE, z:0};
+      var Z0 = {x:0, y:0, z:+DISTANCE};
+      var Z1 = {x:0, y:0, z:-DISTANCE};
 
       // Array reference to relative coordinate points
-      const POINTS = [X0, X1, Y0, Y1, Z0, Z1];
+      var POINTS = [X0, X1, Y0, Y1, Z0, Z1];
 
       window.onload = function () {
         var r = Raphael("canvas", WIDTH, HEIGTH);
@@ -46,7 +46,7 @@
       }
 
       // Drawing is centered on the canvas
-      const INITX = WIDTH/2, INITY = HEIGTH/2;
+      var INITX = WIDTH/2, INITY = HEIGTH/2;
 
       // Returns the X,Y plane coordinates of the points in the SVG path string format.
       function getPath(points)
