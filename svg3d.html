@@ -79,13 +79,9 @@
             var y = point.y;
             var z = point.z;
 
-            var _x = x * cos(rx) - y * sin(rx);
-            var _y = x * sin(rx) * cos(ry) + y * cos(rx) * cos(ry) - z * sin(ry);
-            var _z = x * sin(rx) * sin(ry) + y * cos(rx) * sin(ry) + z * cos(ry);
-
-            point.x = _x;
-            point.y = _y;
-            point.z = _z;
+            point.x = x * cos(rx) - y * sin(rx);
+            point.y = x * sin(rx) * cos(ry) + y * cos(rx) * cos(ry) - z * sin(ry);
+            point.z = x * sin(rx) * sin(ry) + y * cos(rx) * sin(ry) + z * cos(ry);
           }
         }
       }
